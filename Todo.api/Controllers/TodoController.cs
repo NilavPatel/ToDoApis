@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Todo.api.Models;
-using Todo.api.Repositoris;
+using Todo.api.Repositories;
 
 namespace TodoApi.Controllers
 {

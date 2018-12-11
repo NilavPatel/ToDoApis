@@ -1,4 +1,4 @@
-using Todo.api.Repositoris;
+using Todo.api.Core;
 
 namespace Todo.api.Models{
     public class TodoItem: BaseEntity

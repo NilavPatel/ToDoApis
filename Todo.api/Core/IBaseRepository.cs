@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace Todo.api.Repositoris
+namespace Todo.api.Core
 {
     public interface IBaseRepository<T> where T : BaseEntity
     {

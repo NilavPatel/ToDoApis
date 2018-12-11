@@ -3,17 +3,17 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Todo.api.Repositoris
+namespace Todo.api.Core
 {
     /// <summary>
     /// "There's some repetition here - couldn't we have some the sync methods call the async?"
     /// https://blogs.msdn.microsoft.com/pfxteam/2012/04/13/should-i-expose-synchronous-wrappers-for-asynchronous-methods/
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class BaseRepository<T> : IBaseRepository<T>, IAsyncBaseRepository<T> where T : BaseEntity ,new()
+    public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity, new()
     {
         private DbContext _dbContext;
-        
+
         public BaseRepository(DbContext dbContext)
         {
             _dbContext = dbContext;
@@ -29,20 +29,9 @@ namespace Todo.api.Repositoris
             return List(spec).FirstOrDefault();
         }
 
-
-        public virtual async Task<T> GetByIdAsync(long id)
-        {
-            return await _dbContext.Set<T>().FindAsync(id);
-        }
-
         public IEnumerable<T> ListAll()
         {
             return _dbContext.Set<T>().AsEnumerable();
-        }
-
-        public async Task<List<T>> ListAllAsync()
-        {
-            return await _dbContext.Set<T>().ToListAsync();
         }
 
         public IEnumerable<T> List(ISpecification<T> spec)
@@ -62,23 +51,6 @@ namespace Todo.api.Repositoris
                             .Where(spec.Criteria)
                             .AsEnumerable();
         }
-        public async Task<List<T>> ListAsync(ISpecification<T> spec)
-        {
-            // fetch a Queryable that includes all expression-based includes
-            var queryableResultWithIncludes = spec.Includes
-                .Aggregate(_dbContext.Set<T>().AsQueryable(),
-                    (current, include) => current.Include(include));
-
-            // modify the IQueryable to include any string-based include statements
-            var secondaryResult = spec.IncludeStrings
-                .Aggregate(queryableResultWithIncludes,
-                    (current, include) => current.Include(include));
-
-            // return the result of the query using the specification's criteria expression
-            return await secondaryResult
-                            .Where(spec.Criteria)
-                            .ToListAsync();
-        }
 
         public T Add(T entity)
         {
@@ -88,34 +60,16 @@ namespace Todo.api.Repositoris
             return entity;
         }
 
-        public async Task<T> AddAsync(T entity)
-        {
-            _dbContext.Set<T>().Add(entity);
-            await _dbContext.SaveChangesAsync();
-
-            return entity;
-        }
-
         public void Update(T entity)
         {
             _dbContext.Entry(entity).State = EntityState.Modified;
             _dbContext.SaveChanges();
-        }
-        public async Task UpdateAsync(T entity)
-        {
-            _dbContext.Entry(entity).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
         }
 
         public void Delete(T entity)
         {
             _dbContext.Set<T>().Remove(entity);
             _dbContext.SaveChanges();
-        }
-        public async Task DeleteAsync(T entity)
-        {
-            _dbContext.Set<T>().Remove(entity);
-            await _dbContext.SaveChangesAsync();
         }
     }
 }

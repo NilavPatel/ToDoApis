@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Todo.api.Repositoris
+namespace Todo.api.Core
 {
     public interface ISpecification<T>
     {

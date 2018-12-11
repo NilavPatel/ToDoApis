@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
-namespace Todo.api.Repositoris
+namespace Todo.api.Core
 {
     public interface IAsyncBaseRepository<T> where T : BaseEntity
     {
