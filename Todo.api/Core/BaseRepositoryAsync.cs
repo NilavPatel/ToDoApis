@@ -66,5 +66,9 @@ namespace Todo.api.Core
             _dbContext.Set<T>().Remove(entity);
             await _dbContext.SaveChangesAsync();
         }
+
+        public Task<List<T>> FromSqlAsync(string name, List<SqlParameter> parameters){
+            return await _dbContext.Set<T>.FromSql(name, parameters).ToList();
+        }
     }
 }

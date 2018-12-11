@@ -71,5 +71,9 @@ namespace Todo.api.Core
             _dbContext.Set<T>().Remove(entity);
             _dbContext.SaveChanges();
         }
+
+        public List<T> FromSql(string name, List<SqlParameter> parameters){
+            return _dbContext.Set<T>.FromSql(name, parameters).ToList();
+        }
     }
 }
