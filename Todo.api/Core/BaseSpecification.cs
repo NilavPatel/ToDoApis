@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+
 namespace Todo.api.Core{
     public abstract class BaseSpecification<T> : ISpecification<T>
 {
@@ -11,8 +15,14 @@ namespace Todo.api.Core{
                                            new List<Expression<Func<T, object>>>();
 
     public List<string> IncludeStrings { get; } = new List<string>();
- 
-    protected virtual void AddInclude(Expression<Func<T, object>> includeExpression)
+
+        Expression<Func<T, bool>> ISpecification<T>.Criteria => throw new NotImplementedException();
+
+        List<Expression<Func<T, object>>> ISpecification<T>.Includes => throw new NotImplementedException();
+
+        List<string> ISpecification<T>.IncludeStrings => throw new NotImplementedException();
+
+        protected virtual void AddInclude(Expression<Func<T, object>> includeExpression)
     {
         Includes.Add(includeExpression);
     }

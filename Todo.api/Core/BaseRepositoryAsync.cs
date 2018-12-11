@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Data.SqlClient;
 
 namespace Todo.api.Core
 {
@@ -67,8 +68,8 @@ namespace Todo.api.Core
             await _dbContext.SaveChangesAsync();
         }
 
-        public Task<List<T>> FromSqlAsync(string name, List<SqlParameter> parameters){
-            return await _dbContext.Set<T>.FromSql(name, parameters).ToList();
+        public async Task<List<T>> FromSqlAsync(string name, List<SqlParameter> parameters){
+            return await _dbContext.Set<T>().FromSql(name, parameters).ToListAsync();
         }
     }
 }

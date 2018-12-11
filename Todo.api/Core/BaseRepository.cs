@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Data.SqlClient;
 
 namespace Todo.api.Core
 {
@@ -73,7 +74,7 @@ namespace Todo.api.Core
         }
 
         public List<T> FromSql(string name, List<SqlParameter> parameters){
-            return _dbContext.Set<T>.FromSql(name, parameters).ToList();
+            return _dbContext.Set<T>().FromSql(name, parameters).ToList();
         }
     }
 }

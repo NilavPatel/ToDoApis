@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using System.Data.SqlClient;
 
 namespace Todo.api.Core
 {
@@ -12,7 +13,6 @@ namespace Todo.api.Core
         Task<T> AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);
-
         Task<List<T>> FromSqlAsync(string name, List<SqlParameter> parameters);
     }
 }
