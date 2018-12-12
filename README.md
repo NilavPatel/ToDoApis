@@ -1,10 +1,15 @@
-# Repository pattern
+# Generic repository pattern
 
 ````
-1. Normal Repository
-2. Aysnc Repository
+Core:
+1. Normal generic Repository
+2. Aysnc generic Repository
 ````
 
 ````
-1. Use stored procedure in repostory
+Examples given for:
+1. CRUD operations with repsository pattern
+1. Use stored procedure in repository
+2. Specification pattern
 ````
+

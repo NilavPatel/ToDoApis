@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Todo.api.Models;
 using Todo.api.Repositories;
+using Todo.api.Specifications;
 
 namespace TodoApi.Controllers
 {
@@ -15,7 +16,7 @@ namespace TodoApi.Controllers
         private readonly TodoContext _context;
 
         private readonly TodoRepository _repository;
-        
+
         public TodoController(TodoContext context)
         {
             _context = context;
@@ -24,7 +25,10 @@ namespace TodoApi.Controllers
             {
                 // Create a new TodoItem if collection is empty,
                 // which means you can't delete all TodoItems.
-                _context.TodoItems.Add(new TodoItem { Name = "Item1" });
+                _context.TodoItems.Add(new TodoItem { Id = 1, Name = "Create design", IsComplete = true });
+                _context.TodoItems.Add(new TodoItem { Id = 2, Name = "Create web apis", IsComplete = true });
+                _context.TodoItems.Add(new TodoItem { Id = 3, Name = "ingrate deisgn and webapis", IsComplete = false });
+                _context.TodoItems.Add(new TodoItem { Id = 4, Name = "deploy software", IsComplete = false });
                 _context.SaveChanges();
             }
 
@@ -57,7 +61,7 @@ namespace TodoApi.Controllers
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
             await _repository.AddAsync(todoItem);
-            
+
             return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
         }
 
@@ -88,6 +92,15 @@ namespace TodoApi.Controllers
             await _repository.DeleteAsync(todoItem);
 
             return todoItem;
+        }
+
+        //  GET: api/Todo/GetTodoItemStartWith?searchString=Create
+        [Route("GetTodoItemStartWith")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItemStartWith(string searchString)
+        {
+            var startWithSpec = new TodoSpecification(b => b.Name.StartsWith(searchString));
+            return await _repository.ListAsync(startWithSpec);
         }
     }
 }
