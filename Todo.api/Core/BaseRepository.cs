@@ -73,6 +73,7 @@ namespace Todo.api.Core
             _dbContext.SaveChanges();
         }
 
+        // only work for SQL, in memory is no-sql database
         public List<T> FromSql(string name, params object [] parameters){
             return _dbContext.Set<T>().FromSql(name, parameters).ToList();
         }

@@ -68,6 +68,7 @@ namespace Todo.api.Core
             await _dbContext.SaveChangesAsync();
         }
 
+        // only work for SQL, in memory is no-sql database
         public async Task<List<T>> FromSqlAsync(string name, params object [] parameters){
             return await _dbContext.Set<T>().FromSql(name, parameters).ToListAsync();
         }

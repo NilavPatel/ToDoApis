@@ -104,6 +104,7 @@ namespace TodoApi.Controllers
             return await _repository.ListAsync(startWithSpec);
         }
 
+        // only work for SQL, in memory is no-sql database
         [Route("GetCompletedTodoItems")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetCompletedTodoItems()
