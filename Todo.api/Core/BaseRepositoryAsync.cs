@@ -68,7 +68,7 @@ namespace Todo.api.Core
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<T>> FromSqlAsync(string name, List<SqlParameter> parameters){
+        public async Task<List<T>> FromSqlAsync(string name, params object [] parameters){
             return await _dbContext.Set<T>().FromSql(name, parameters).ToListAsync();
         }
     }

@@ -73,7 +73,7 @@ namespace Todo.api.Core
             _dbContext.SaveChanges();
         }
 
-        public List<T> FromSql(string name, List<SqlParameter> parameters){
+        public List<T> FromSql(string name, params object [] parameters){
             return _dbContext.Set<T>().FromSql(name, parameters).ToList();
         }
     }

@@ -13,6 +13,6 @@ namespace Todo.api.Core
         Task<T> AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);
-        Task<List<T>> FromSqlAsync(string name, List<SqlParameter> parameters);
+        Task<List<T>> FromSqlAsync(string name, params object [] parameters);
     }
 }

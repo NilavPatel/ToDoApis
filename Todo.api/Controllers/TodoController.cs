@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Todo.api.Models;
 using Todo.api.Repositories;
 using Todo.api.Specifications;
+using System.Data.SqlClient;
 
 namespace TodoApi.Controllers
 {
@@ -101,6 +102,14 @@ namespace TodoApi.Controllers
         {
             var startWithSpec = new TodoSpecification(b => b.Name.StartsWith(searchString));
             return await _repository.ListAsync(startWithSpec);
+        }
+
+        [Route("GetCompletedTodoItems")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TodoItem>>> GetCompletedTodoItems()
+        {            
+            var rawSql = $"select * from TodoList where IsComplted={0}";
+            return await _repository.FromSqlAsync(rawSql, 1);
         }
     }
 }

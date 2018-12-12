@@ -13,6 +13,6 @@ namespace Todo.api.Core
         T Add(T entity);
         void Update(T entity);
         void Delete(T entity);
-        List<T> FromSql(string name, List<SqlParameter> parameters);
+        List<T> FromSql(string name, params object [] parameters);
     }
 }
