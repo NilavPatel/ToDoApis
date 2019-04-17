@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 
 namespace Todo.api.Core
 {
-    public interface IAsyncBaseRepository<T> where T : BaseEntity
+    public interface IBaseRepositoryAsync<T> where T : BaseEntity
     {
         Task<T> GetByIdAsync(long id);
         Task<List<T>> ListAllAsync();
