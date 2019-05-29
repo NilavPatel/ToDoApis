@@ -1,12 +1,14 @@
 using Todo.api.Core;
 using Todo.api.Models;
-using System.Linq.Expressions;
 
-namespace Todo.api.Specifications{
+namespace Todo.api.Specifications
+{
     public class TodoSpecification : BaseSpecification<TodoItem>
     {
-        public TodoSpecification(Expression<System.Func<TodoItem, bool>> criteria) : base(criteria)
+        public TodoSpecification(string name, int skip, int take) : base(t => t.Name == name)
         {
+            ApplyOrderBy(t => t.Name);
+            ApplyPaging(skip, take);
         }
     }
 }

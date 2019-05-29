@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Todo.api.Models;
 using Todo.api.Repositories;
 using Todo.api.Specifications;
-using System.Data.SqlClient;
 
 namespace TodoApi.Controllers
 {
@@ -38,14 +36,14 @@ namespace TodoApi.Controllers
 
         // GET: api/Todo
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
+        public async Task<IEnumerable<TodoItem>> GetTodoItems()
         {
             return await _repository.ListAllAsync();
         }
 
         // GET: api/Todo/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TodoItem>> GetTodoItem(long id)
+        public async Task<ActionResult<TodoItem>> GetTodoItem(int id)
         {
             var todoItem = await _repository.GetByIdAsync(id);
 
@@ -82,7 +80,7 @@ namespace TodoApi.Controllers
 
         // DELETE: api/Todo/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<TodoItem>> DeleteTodoItem(long id)
+        public async Task<ActionResult<TodoItem>> DeleteTodoItem(int id)
         {
             var todoItem = await _repository.GetByIdAsync(id);
             if (todoItem == null)
@@ -98,9 +96,9 @@ namespace TodoApi.Controllers
         //  GET: api/Todo/GetTodoItemStartWith?searchString=Create
         [Route("GetTodoItemStartWith")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItemStartWith(string searchString)
+        public async Task<IEnumerable<TodoItem>> GetTodoItemStartWith(string searchString)
         {
-            var startWithSpec = new TodoSpecification(b => b.Name.StartsWith(searchString));
+            var startWithSpec = new TodoSpecification(searchString, 0 ,10);            
             return await _repository.ListAsync(startWithSpec);
         }
 

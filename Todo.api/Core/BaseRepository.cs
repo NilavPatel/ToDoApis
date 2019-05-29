@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
 
 namespace Todo.api.Core
 {
@@ -15,37 +13,29 @@ namespace Todo.api.Core
             _dbContext = dbContext;
         }
 
-        public virtual T GetById(long id)
+        public T GetById(int id)
         {
             return _dbContext.Set<T>().Find(id);
         }
 
-        public T GetSingleBySpec(ISpecification<T> spec)
+        public IReadOnlyList<T> ListAll()
         {
-            return List(spec).FirstOrDefault();
+            return _dbContext.Set<T>().ToList();
         }
 
-        public IEnumerable<T> ListAll()
+        public IReadOnlyList<T> List(ISpecification<T> spec)
         {
-            return _dbContext.Set<T>().AsEnumerable();
+            return ApplySpecification(spec).ToList();
         }
 
-        public IEnumerable<T> List(ISpecification<T> spec)
+        public T FirstOrDefaultAsync(ISpecification<T> spec)
         {
-            // fetch a Queryable that includes all expression-based includes
-            var queryableResultWithIncludes = spec.Includes
-                .Aggregate(_dbContext.Set<T>().AsQueryable(),
-                    (current, include) => current.Include(include));
+            return ApplySpecification(spec).FirstOrDefault();
+        }
 
-            // modify the IQueryable to include any string-based include statements
-            var secondaryResult = spec.IncludeStrings
-                .Aggregate(queryableResultWithIncludes,
-                    (current, include) => current.Include(include));
-
-            // return the result of the query using the specification's criteria expression
-            return secondaryResult
-                            .Where(spec.Criteria)
-                            .AsEnumerable();
+        public int Count(ISpecification<T> spec)
+        {
+            return ApplySpecification(spec).Count();
         }
 
         public T Add(T entity)
@@ -69,8 +59,14 @@ namespace Todo.api.Core
         }
 
         // only work for SQL, in memory is no-sql database
-        public List<T> FromSql(string name, params object [] parameters){
+        public List<T> FromSql(string name, params object[] parameters)
+        {
             return _dbContext.Set<T>().FromSql(name, parameters).ToList();
+        }
+
+        private IQueryable<T> ApplySpecification(ISpecification<T> spec)
+        {
+            return SpecificationEvaluator<T>.GetQuery(_dbContext.Set<T>().AsQueryable(), spec);
         }
     }
 }

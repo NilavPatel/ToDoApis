@@ -1,15 +1,15 @@
-# Generic repository pattern
+# Generic repository pattern in Asp.Net Core
 
+## Types of base repository
 ````
-Core:
-1. Normal generic Repository
-2. Aysnc generic Repository
+1.  Sync generic Repository
+2.  Aysnc generic Repository
 ````
 
+## Features
 ````
-Examples given for:
-1. CRUD operations with repsository pattern
-1. Use stored procedure in repository
-2. Specification pattern
+1.  CRUD operations with repsository pattern
+2.  Use stored procedure and query in repository
+3.  Specification pattern
 ````
 

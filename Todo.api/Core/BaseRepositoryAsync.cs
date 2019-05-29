@@ -2,45 +2,41 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Data.SqlClient;
 
 namespace Todo.api.Core
 {
     public class BaseRepositoryAsync<T> : IBaseRepositoryAsync<T> where T : BaseEntity, new()
     {
-        private DbContext _dbContext;
+        protected readonly DbContext _dbContext;
 
         public BaseRepositoryAsync(DbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public virtual async Task<T> GetByIdAsync(long id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }
 
-        public async Task<List<T>> ListAllAsync()
+        public async Task<IReadOnlyList<T>> ListAllAsync()
         {
             return await _dbContext.Set<T>().ToListAsync();
         }
 
-        public async Task<List<T>> ListAsync(ISpecification<T> spec)
+        public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
         {
-            // fetch a Queryable that includes all expression-based includes
-            var queryableResultWithIncludes = spec.Includes
-                .Aggregate(_dbContext.Set<T>().AsQueryable(),
-                    (current, include) => current.Include(include));
+            return await ApplySpecification(spec).ToListAsync();
+        }
 
-            // modify the IQueryable to include any string-based include statements
-            var secondaryResult = spec.IncludeStrings
-                .Aggregate(queryableResultWithIncludes,
-                    (current, include) => current.Include(include));
+        public async Task<T> FirstOrDefaultAsync(ISpecification<T> spec)
+        {
+            return await ApplySpecification(spec).FirstOrDefaultAsync();
+        }
 
-            // return the result of the query using the specification's criteria expression
-            return await secondaryResult
-                            .Where(spec.Criteria)
-                            .ToListAsync();
+        public async Task<int> CountAsync(ISpecification<T> spec)
+        {
+            return await ApplySpecification(spec).CountAsync();
         }
 
         public async Task<T> AddAsync(T entity)
@@ -64,8 +60,14 @@ namespace Todo.api.Core
         }
 
         // only work for SQL, in memory is no-sql database
-        public async Task<List<T>> FromSqlAsync(string name, params object [] parameters){
+        public async Task<List<T>> FromSqlAsync(string name, params object[] parameters)
+        {
             return await _dbContext.Set<T>().FromSql(name, parameters).ToListAsync();
+        }
+
+        private IQueryable<T> ApplySpecification(ISpecification<T> spec)
+        {
+            return SpecificationEvaluator<T>.GetQuery(_dbContext.Set<T>().AsQueryable(), spec);
         }
     }
 }
