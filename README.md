@@ -11,5 +11,7 @@
 1.  CRUD operations with repsository pattern
 2.  Use stored procedure and query in repository
 3.  Specification pattern
+4.  Logger Factory with NLog implementation
+5.  Custom Exception filter attribute
 ````
 

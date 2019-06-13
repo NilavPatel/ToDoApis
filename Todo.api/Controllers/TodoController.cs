@@ -6,6 +6,7 @@ using Todo.api.Filters;
 using Todo.api.Models;
 using Todo.api.Repositories;
 using Todo.api.Specifications;
+using Todo.api.Logger;
 
 namespace TodoApi.Controllers
 {
@@ -17,6 +18,8 @@ namespace TodoApi.Controllers
         private readonly TodoContext _context;
 
         private readonly TodoRepository _repository;
+
+        private readonly ICustomLogger _logger;
 
         public TodoController(TodoContext context)
         {
@@ -34,12 +37,14 @@ namespace TodoApi.Controllers
             }
 
             _repository = new TodoRepository(_context);
+            _logger = CustomLoggerFactory.GetLogger();
         }
 
         // GET: api/Todo
         [HttpGet]
         public async Task<IEnumerable<TodoItem>> GetTodoItems()
         {
+            _logger.LogInfo("get all to do items api called.");
             return await _repository.ListAllAsync();
         }
 
