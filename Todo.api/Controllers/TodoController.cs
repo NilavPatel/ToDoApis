@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Todo.api.Filters;
 using Todo.api.Models;
 using Todo.api.Repositories;
 using Todo.api.Specifications;
@@ -10,6 +11,7 @@ namespace TodoApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [CustomExceptionFilter]
     public class TodoController : ControllerBase
     {
         private readonly TodoContext _context;
