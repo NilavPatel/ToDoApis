@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Todo.api.Filters;
 using Todo.api.Models;
-using Todo.api.Repositories;
 using Todo.api.Specifications;
 using Todo.api.Logger;
 
@@ -17,8 +16,8 @@ namespace TodoApi.Controllers
     {
         private readonly TodoContext _context;
 
-        private readonly TodoRepository _repository;
-
+        private readonly ToDoUnitOfWork _toDoUnitOfWork;
+        
         private readonly ICustomLogger _logger;
 
         public TodoController(TodoContext context)
@@ -36,7 +35,7 @@ namespace TodoApi.Controllers
                 _context.SaveChanges();
             }
 
-            _repository = new TodoRepository(_context);
+            _toDoUnitOfWork = new ToDoUnitOfWork(context);
             _logger = CustomLoggerFactory.GetLogger();
         }
 
@@ -45,14 +44,14 @@ namespace TodoApi.Controllers
         public async Task<IEnumerable<TodoItem>> GetTodoItems()
         {
             _logger.LogInfo("get all to do items api called.");
-            return await _repository.ListAllAsync();
+            return await _toDoUnitOfWork.ToDoRepository.ListAllAsync();
         }
 
         // GET: api/Todo/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TodoItem>> GetTodoItem(int id)
         {
-            var todoItem = await _repository.GetByIdAsync(id);
+            var todoItem = await _toDoUnitOfWork.ToDoRepository.GetByIdAsync(id);
 
             if (todoItem == null)
             {
@@ -66,8 +65,8 @@ namespace TodoApi.Controllers
         [HttpPost]
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
-            await _repository.AddAsync(todoItem);
-
+            await _toDoUnitOfWork.ToDoRepository.AddAsync(todoItem);
+            _toDoUnitOfWork.SaveChanges();
             return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
         }
 
@@ -80,8 +79,8 @@ namespace TodoApi.Controllers
                 return BadRequest();
             }
 
-            await _repository.UpdateAsync(todoItem);
-
+            await _toDoUnitOfWork.ToDoRepository.UpdateAsync(todoItem);
+            _toDoUnitOfWork.SaveChanges();
             return NoContent();
         }
 
@@ -89,14 +88,14 @@ namespace TodoApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<TodoItem>> DeleteTodoItem(int id)
         {
-            var todoItem = await _repository.GetByIdAsync(id);
+            var todoItem = await _toDoUnitOfWork.ToDoRepository.GetByIdAsync(id);
             if (todoItem == null)
             {
                 return NotFound();
             }
 
-            await _repository.DeleteAsync(todoItem);
-
+            await _toDoUnitOfWork.ToDoRepository.DeleteAsync(todoItem);
+            _toDoUnitOfWork.SaveChanges();
             return todoItem;
         }
 
@@ -105,17 +104,17 @@ namespace TodoApi.Controllers
         [HttpGet]
         public async Task<IEnumerable<TodoItem>> GetTodoItemStartWith(string searchString)
         {
-            var startWithSpec = new TodoSpecification(searchString, 0 ,10);            
-            return await _repository.ListAsync(startWithSpec);
+            var startWithSpec = new TodoSpecification(searchString, 0, 10);
+            return await _toDoUnitOfWork.ToDoRepository.ListAsync(startWithSpec);
         }
 
         // only work for SQL, in memory is no-sql database
         [Route("GetCompletedTodoItems")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetCompletedTodoItems()
-        {            
+        {
             var rawSql = $"select * from TodoList where IsComplted={0}";
-            return await _repository.FromSqlAsync(rawSql, 1);
+            return await _toDoUnitOfWork.ToDoRepository.FromSqlAsync(rawSql, 1);
         }
     }
 }
