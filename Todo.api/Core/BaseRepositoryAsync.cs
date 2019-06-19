@@ -2,14 +2,15 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using Todo.api.Models;
 
 namespace Todo.api.Core
 {
     public class BaseRepositoryAsync<T> : IBaseRepositoryAsync<T> where T : BaseEntity, new()
     {
-        protected readonly DbContext _dbContext;
+        protected readonly TodoContext _dbContext;
 
-        public BaseRepositoryAsync(DbContext dbContext)
+        public BaseRepositoryAsync(TodoContext dbContext)
         {
             _dbContext = dbContext;
         }

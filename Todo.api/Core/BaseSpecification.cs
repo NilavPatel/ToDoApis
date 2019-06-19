@@ -4,9 +4,9 @@ using System.Linq.Expressions;
 
 namespace Todo.api.Core
 {
-    public abstract class BaseSpecification<T> : ISpecification<T>
+    public class BaseSpecification<T> : ISpecification<T>
     {
-        protected BaseSpecification(Expression<Func<T, bool>> criteria)
+        public BaseSpecification(Expression<Func<T, bool>> criteria)
         {
             Criteria = criteria;
         }
@@ -21,29 +21,29 @@ namespace Todo.api.Core
         public int Skip { get; private set; }
         public bool isPagingEnabled { get; private set; } = false;
 
-        protected virtual void AddInclude(Expression<Func<T, object>> includeExpression)
+        public virtual void AddInclude(Expression<Func<T, object>> includeExpression)
         {
             Includes.Add(includeExpression);
         }
-        protected virtual void AddInclude(string includeString)
+        public virtual void AddInclude(string includeString)
         {
             IncludeStrings.Add(includeString);
         }
-        protected virtual void ApplyPaging(int skip, int take)
+        public virtual void ApplyPaging(int skip, int take)
         {
             Skip = skip;
             Take = take;
             isPagingEnabled = true;
         }
-        protected virtual void ApplyOrderBy(Expression<Func<T, object>> orderByExpression)
+        public virtual void ApplyOrderBy(Expression<Func<T, object>> orderByExpression)
         {
             OrderBy = orderByExpression;
         }
-        protected virtual void ApplyOrderByDescending(Expression<Func<T, object>> orderByDescendingExpression)
+        public virtual void ApplyOrderByDescending(Expression<Func<T, object>> orderByDescendingExpression)
         {
             OrderByDescending = orderByDescendingExpression;
-        }                
-        protected virtual void ApplyGroupBy(Expression<Func<T, object>> groupByExpression)
+        }
+        public virtual void ApplyGroupBy(Expression<Func<T, object>> groupByExpression)
         {
             GroupBy = groupByExpression;
         }

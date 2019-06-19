@@ -3,12 +3,14 @@ using Todo.api.Models;
 
 namespace Todo.api.Specifications
 {
-    public class TodoSpecification : BaseSpecification<TodoItem>
+    public class TodoSpecification
     {
-        public TodoSpecification(string name, int skip, int take) : base(t => t.Name == name)
+        public static BaseSpecification<TodoItem> NameStartWith(string name, int skip, int take)
         {
-            ApplyOrderBy(t => t.Name);
-            ApplyPaging(skip, take);
+            var spec = new BaseSpecification<TodoItem>(t => t.Name.Contains(name));
+            spec.ApplyOrderBy(t => t.Name);
+            spec.ApplyPaging(skip, take);
+            return spec;
         }
     }
 }
