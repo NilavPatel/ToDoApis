@@ -15,3 +15,16 @@
 5.  Custom Exception filter attribute
 ````
 
+## How to get HttpContext in Asp.net core
+````
+1. In Startup.cs file add below code
+
+    services.AddScoped< Microsoft.AspNetCore.Http.IHttpContextAccessor, Microsoft.AspNetCore.Http.HttpContextAccessor>();
+
+2. In controller or service class pass dependency as 
+
+    private HttpContext _currentHttpContext;
+    public Class_Constructor(IHttpContextAccessor httpContextAccessor){
+        _currentHttpContext = httpContextAccessor.HttpContext;
+    }
+````

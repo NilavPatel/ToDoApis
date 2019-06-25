@@ -7,6 +7,7 @@ using Todo.api.Models;
 using Todo.api.Specifications;
 using Todo.api.Logger;
 using Todo.api.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace TodoApi.Controllers
 {
@@ -21,7 +22,11 @@ namespace TodoApi.Controllers
 
         private readonly ICustomLogger _logger;
 
-        public TodoController(TodoContext context, IBaseRepositoryAsync<TodoItem> todoRepository)
+        private HttpContext _currentHttpContext;
+
+        public TodoController(TodoContext context,
+            IBaseRepositoryAsync<TodoItem> todoRepository,
+            IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
 
@@ -38,6 +43,8 @@ namespace TodoApi.Controllers
 
             _todoRepository = todoRepository;
             _logger = CustomLoggerFactory.GetLogger();
+            // HttpContext object
+            _currentHttpContext = httpContextAccessor.HttpContext;
         }
 
         // GET: api/Todo
