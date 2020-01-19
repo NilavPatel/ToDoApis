@@ -28,7 +28,7 @@ namespace Todo.api.Core
             return ApplySpecification(spec).ToList();
         }
 
-        public T FirstOrDefaultAsync(ISpecification<T> spec)
+        public T FirstOrDefault(ISpecification<T> spec)
         {
             return ApplySpecification(spec).FirstOrDefault();
         }

@@ -7,7 +7,7 @@ namespace Todo.api.Core
         T GetById(int id);
         IReadOnlyList<T> ListAll();
         IReadOnlyList<T> List(ISpecification<T> spec);
-        T FirstOrDefaultAsync(ISpecification<T> spec);
+        T FirstOrDefault(ISpecification<T> spec);
         T Add(T entity);
         void Update(T entity);
         void Delete(T entity);
